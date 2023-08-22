@@ -3,10 +3,12 @@ from django.urls import path, include
 from rest_framework import routers
 
 from user.views import UserViewset
+from project.views import ProjectViewset
 
 
 router = routers.SimpleRouter()
 router.register("user", UserViewset, basename="user")
+router.register("project", ProjectViewset, basename="project")
 
 
 urlpatterns = [
