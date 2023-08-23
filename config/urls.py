@@ -2,13 +2,16 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 
-from user.views import UserViewset
-from project.views import ProjectViewset
+from user.views import UserViewset, ContributorViewset
+from project.views import ProjectViewset, IssueViewset, CommentViewset
 
 
 router = routers.SimpleRouter()
 router.register("user", UserViewset, basename="user")
 router.register("project", ProjectViewset, basename="project")
+router.register("contributor", ContributorViewset, basename="contributor")
+router.register("issue", IssueViewset, basename="issue")
+router.register("comment", CommentViewset, basename="comment")
 
 
 urlpatterns = [
