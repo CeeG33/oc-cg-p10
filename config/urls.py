@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import routers
+
 
 from user.views import UserViewset, ContributorViewset
 from project.views import ProjectViewset, IssueViewset, CommentViewset
