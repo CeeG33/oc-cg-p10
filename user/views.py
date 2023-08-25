@@ -13,6 +13,14 @@ class UserViewset(ModelViewSet):
     def get_queryset(self):
         return User.objects.all()
     
+    def create(self, request, *args, **kwargs):
+        serializer = UserDetailSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.create(serializer.validated_data)
+            return Response("User created successfully !")
+        else:
+            return Response(serializer.errors)
+    
 
 class ContributorViewset(ModelViewSet):
 

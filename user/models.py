@@ -19,6 +19,9 @@ class User(AbstractUser):
 
     can_data_be_shared = models.BooleanField()
 
+    def __str__(self):
+        return self.username
+
 
 class Contributor(models.Model):
     user = models.ForeignKey(

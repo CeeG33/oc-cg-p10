@@ -4,26 +4,46 @@ from user.serializers import UserListSerializer
 from project.models import Project, Issue, Comment
 
 
-class ProjectSerializer(ModelSerializer):
-    # contributors = SerializerMethodField()
-    # author = SerializerMethodField()
+class MultipleSerializerMixin:
+    author = SerializerMethodField()
+
+    def get_author(self, instance):
+        return instance.author.username
+    
+    def get_title(self, instance):
+        return instance.title
+
+
+class ProjectSerializer(MultipleSerializerMixin, ModelSerializer):
+    contributors = SerializerMethodField()
 
     class Meta:
         model = Project
         fields = ["name", "author", "contributors", "type", "description", "time_created"]
+        read_only_fields = ["author"]
 
-    def get_author(self, instance):
-        queryset = instance.author
-        serializer = UserListSerializer(queryset)
-        return serializer.data
+    def create(self, validated_data):
+        user = self.context["request"].user
+        validated_data["author"] = user
+
+        contributors_data = validated_data.pop("contributors", [])
+
+        project = Project.objects.create(**validated_data)
+        project.contributors.add(user)
+
+        for contributor in contributors_data:
+            project.contributors.add(contributor)
+
+        return project
 
     def get_contributors(self, instance):
-        queryset = instance.contributors.all()
-        serializer = UserListSerializer(queryset, many=True)
-        return serializer.data
+        contributors = instance.contributors.all()
+        usernames = [contributor.username for contributor in contributors]
+        return usernames
+    
+    
 
-
-class IssueSerializer(ModelSerializer):
+class IssueSerializer(MultipleSerializerMixin, ModelSerializer):
 
     class Meta:
         model = Issue
@@ -38,7 +58,7 @@ class IssueSerializer(ModelSerializer):
                   "time_created"]
 
 
-class CommentSerializer(ModelSerializer):
+class CommentSerializer(MultipleSerializerMixin, ModelSerializer):
 
     class Meta:
         model = Comment

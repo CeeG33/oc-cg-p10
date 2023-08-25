@@ -7,7 +7,12 @@ class UserDetailSerializer(ModelSerializer):
     
     class Meta:
         model = User
-        fields = ["username", "age", "can_be_contacted", "can_data_be_shared"]
+        fields = ["username", "password", "age", "can_be_contacted", "can_data_be_shared"]
+        extra_kwargs = {"password": {"write_only": True}}
+
+    def create(self, validated_data):
+        instance = User.objects.create_user(**validated_data)
+        return instance
 
 
 class UserListSerializer(ModelSerializer):
