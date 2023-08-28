@@ -3,11 +3,11 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from user.models import User, Contributor
-from user.serializers import UserDetailSerializer, ContributorSerializer
+from user.serializers import UserDetailSerializer, UserListSerializer, ContributorSerializer
 
 class UserViewset(ModelViewSet):
-
-    serializer_class = UserDetailSerializer
+    detail_serializer_class = UserDetailSerializer
+    serializer_class = UserListSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
@@ -20,6 +20,11 @@ class UserViewset(ModelViewSet):
             return Response("User created successfully !")
         else:
             return Response(serializer.errors)
+        
+    def get_serializer_class(self):
+        if self.action == "retrieve" and self.detail_serializer_class is not None:
+            return self.detail_serializer_class
+        return super().get_serializer_class()
     
 
 class ContributorViewset(ModelViewSet):
