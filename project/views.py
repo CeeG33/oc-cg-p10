@@ -20,7 +20,7 @@ class MultipleSerializerMixin:
     detail_serializer_class = None
 
     def get_serializer_class(self):
-        if self.action == "retrieve" and self.detail_serializer_class is not None:
+        if self.action in ["retrieve", "create", "update", "partial_update"] and self.detail_serializer_class is not None:
             return self.detail_serializer_class
         return super().get_serializer_class()
 
@@ -31,7 +31,7 @@ class ProjectViewset(MultipleSerializerMixin, ModelViewSet):
     permission_classes = [IsProjectAuthorOrContributorReadOnly]
 
     def get_queryset(self):
-        return Project.objects.all()
+        return Project.objects.filter(contributors=self.request.user)
 
 
 class IssueViewset(MultipleSerializerMixin, ModelViewSet):
@@ -40,7 +40,7 @@ class IssueViewset(MultipleSerializerMixin, ModelViewSet):
     permission_classes = [IsIssueAuthorOrContributorReadOnly]
 
     def get_queryset(self):
-        return Issue.objects.all()
+        return Issue.objects.filter(project=self.kwargs["project_pk"])
 
 
 class CommentViewset(MultipleSerializerMixin, ModelViewSet):
@@ -49,4 +49,4 @@ class CommentViewset(MultipleSerializerMixin, ModelViewSet):
     permission_classes = [IsCommentAuthorOrContributorReadOnly]
 
     def get_queryset(self):
-        return Comment.objects.all()
+        return Comment.objects.filter(issue=self.kwargs["issue_pk"])

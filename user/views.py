@@ -22,7 +22,7 @@ class UserViewset(ModelViewSet):
             return Response(serializer.errors)
         
     def get_serializer_class(self):
-        if self.action == "retrieve" and self.detail_serializer_class is not None:
+        if self.action in ["retrieve", "create", "update", "partial_update"] and self.detail_serializer_class is not None:
             return self.detail_serializer_class
         return super().get_serializer_class()
     

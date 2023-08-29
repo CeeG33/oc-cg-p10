@@ -1,6 +1,7 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField, ValidationError
 
 from user.serializers import UserListSerializer
+from user.models import User
 from project.models import Project, Issue, Comment
 
 
@@ -28,12 +29,12 @@ class ProjectListSerializer(ModelSerializer):
 
 
 class ProjectDetailSerializer(ModelSerializer):
-    contributors = SerializerMethodField()
     author = SerializerMethodField()
 
     class Meta:
         model = Project
         fields = [
+            "id",
             "name",
             "author",
             "contributors",
@@ -41,7 +42,6 @@ class ProjectDetailSerializer(ModelSerializer):
             "description",
             "time_created",
         ]
-        read_only_fields = ["author"]
 
     def create(self, validated_data):
         user = self.context["request"].user
@@ -67,7 +67,6 @@ class ProjectDetailSerializer(ModelSerializer):
 
 
 class IssueListSerializer(ModelSerializer):
-    project = SerializerMethodField()
     author = SerializerMethodField()
     accountable = SerializerMethodField()
 
@@ -75,15 +74,10 @@ class IssueListSerializer(ModelSerializer):
         model = Issue
         fields = [
             "author",
-            "project",
             "title",
             "accountable",
             "time_created",
         ]
-        read_only_fields = ["author"]
-    
-    def get_project(self, instance):
-        return instance.project.name
     
     def get_accountable(self, instance):
         return instance.accountable.username
