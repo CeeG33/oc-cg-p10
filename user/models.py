@@ -25,15 +25,13 @@ class User(AbstractUser):
 
 class Contributor(models.Model):
     user = models.ForeignKey(
-        to=settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="user")
-    
+        to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="user"
+    )
+
     project = models.ForeignKey(
-        to=Project,
-        on_delete=models.CASCADE,
-        related_name="contributes_to")
-    
+        to=Project, on_delete=models.CASCADE, related_name="contributes_to"
+    )
+
     class Meta:
         unique_together = (
             "user",

@@ -1,6 +1,10 @@
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+    TokenVerifyView,
+)
 from rest_framework_nested import routers
 
 
@@ -15,10 +19,14 @@ user_router.register("contributor", ContributorViewset, basename="contributor")
 project_router = routers.SimpleRouter()
 project_router.register("project", ProjectViewset, basename="project")
 
-target_project_router = routers.NestedSimpleRouter(project_router, "project", lookup="project")
+target_project_router = routers.NestedSimpleRouter(
+    project_router, "project", lookup="project"
+)
 target_project_router.register("issue", IssueViewset, basename="issue")
 
-target_issue_router = routers.NestedSimpleRouter(target_project_router, "issue", lookup="issue")
+target_issue_router = routers.NestedSimpleRouter(
+    target_project_router, "issue", lookup="issue"
+)
 target_issue_router.register("comment", CommentViewset, basename="comment")
 
 

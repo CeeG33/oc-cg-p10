@@ -3,12 +3,14 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from project.models import Project, Issue, Comment
-from project.serializers import (ProjectDetailSerializer,
-                                 ProjectListSerializer,
-                                 IssueListSerializer,
-                                 IssueDetailSerializer,
-                                 CommentListSerializer,
-                                 CommentDetailSerializer)
+from project.serializers import (
+    ProjectDetailSerializer,
+    ProjectListSerializer,
+    IssueListSerializer,
+    IssueDetailSerializer,
+    CommentListSerializer,
+    CommentDetailSerializer,
+)
 from project.permissions import (
     IsProjectAuthorOrContributorReadOnly,
     IsIssueAuthorOrContributorReadOnly,
@@ -20,7 +22,10 @@ class MultipleSerializerMixin:
     detail_serializer_class = None
 
     def get_serializer_class(self):
-        if self.action in ["retrieve", "create", "update", "partial_update"] and self.detail_serializer_class is not None:
+        if (
+            self.action in ["retrieve", "create", "update", "partial_update"]
+            and self.detail_serializer_class is not None
+        ):
             return self.detail_serializer_class
         return super().get_serializer_class()
 

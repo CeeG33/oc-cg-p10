@@ -4,10 +4,16 @@ from user.models import User, Contributor
 
 
 class UserDetailSerializer(ModelSerializer):
-    
     class Meta:
         model = User
-        fields = ["id", "username", "password", "age", "can_be_contacted", "can_data_be_shared"]
+        fields = [
+            "id",
+            "username",
+            "password",
+            "age",
+            "can_be_contacted",
+            "can_data_be_shared",
+        ]
         extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):
@@ -16,14 +22,12 @@ class UserDetailSerializer(ModelSerializer):
 
 
 class UserListSerializer(ModelSerializer):
-    
     class Meta:
         model = User
         fields = ["id", "username"]
 
 
 class ContributorSerializer(ModelSerializer):
-
     class Meta:
         model = Contributor
         fields = ["user", "project"]

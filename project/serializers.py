@@ -1,4 +1,8 @@
-from rest_framework.serializers import ModelSerializer, SerializerMethodField, ValidationError
+from rest_framework.serializers import (
+    ModelSerializer,
+    SerializerMethodField,
+    ValidationError,
+)
 
 from user.serializers import UserListSerializer
 from user.models import User
@@ -24,7 +28,7 @@ class ProjectListSerializer(ModelSerializer):
         contributors = instance.contributors.all()
         usernames = [contributor.username for contributor in contributors]
         return usernames
-    
+
     def get_author(self, instance):
         return instance.author.username
 
@@ -45,6 +49,7 @@ class ProjectDetailSerializer(ModelSerializer):
             "description",
             "time_created",
         ]
+
     read_only_fields = ["author", "contributors_name"]
 
     def create(self, validated_data):
@@ -60,14 +65,14 @@ class ProjectDetailSerializer(ModelSerializer):
             project.contributors.add(contributor)
 
         return project
-    
+
     def update(self, instance, validated_data):
         instance.contributors.clear()
 
         contributors_data = validated_data.pop("contributors", [])
 
         instance.contributors.add(instance.author)
-        
+
         instance = super().update(instance, validated_data)
 
         for contributor in contributors_data:
@@ -76,9 +81,11 @@ class ProjectDetailSerializer(ModelSerializer):
         return instance
 
     def get_contributors_name(self, instance):
-        usernames = [contributor.username for contributor in instance.contributors.all()]
+        usernames = [
+            contributor.username for contributor in instance.contributors.all()
+        ]
         return usernames
-    
+
     def get_author(self, instance):
         return instance.author.username
 
@@ -96,10 +103,10 @@ class IssueListSerializer(ModelSerializer):
             "accountable",
             "time_created",
         ]
-    
+
     def get_accountable(self, instance):
         return instance.accountable.username
-    
+
     def get_author(self, instance):
         return instance.author.username
 
@@ -136,35 +143,39 @@ class IssueDetailSerializer(ModelSerializer):
 
         accountable = validated_data.get("accountable")
         if accountable and accountable not in project.contributors.all():
-            raise ValidationError("Error : You can only select contributors to this project.")
+            raise ValidationError(
+                "Error : You can only select contributors to this project."
+            )
 
         issue = Issue.objects.create(**validated_data)
 
         return issue
-    
+
     def update(self, instance, validated_data):
         accountable = validated_data.get("accountable")
         if accountable and accountable not in instance.project.contributors.all():
-            raise ValidationError("Error : You can only select contributors to this project.")
+            raise ValidationError(
+                "Error : You can only select contributors to this project."
+            )
 
         instance = super().update(instance, validated_data)
 
         return instance
-    
+
     def get_project(self, instance):
         return self.instance.project.name
-    
+
     def get_author(self, instance):
         return instance.author.username
-    
+
     def get_accountable_name(self, instance):
         return instance.accountable_user.username
-        
+
 
 class CommentListSerializer(ModelSerializer):
     author = SerializerMethodField()
     issue = SerializerMethodField()
-    
+
     class Meta:
         model = Comment
         fields = ["id", "author", "title", "issue", "uuid", "time_created"]
@@ -172,7 +183,7 @@ class CommentListSerializer(ModelSerializer):
 
     def get_author(self, instance):
         return instance.author.username
-    
+
     def get_issue(self, instance):
         return instance.issue.title
 
@@ -180,10 +191,18 @@ class CommentListSerializer(ModelSerializer):
 class CommentDetailSerializer(ModelSerializer):
     author = SerializerMethodField()
     issue = SerializerMethodField()
-    
+
     class Meta:
         model = Comment
-        fields = ["id", "author", "title", "issue", "description", "uuid", "time_created"]
+        fields = [
+            "id",
+            "author",
+            "title",
+            "issue",
+            "description",
+            "uuid",
+            "time_created",
+        ]
         read_only_fields = ["author"]
 
     def create(self, validated_data):
@@ -197,10 +216,9 @@ class CommentDetailSerializer(ModelSerializer):
         comment = Comment.objects.create(**validated_data)
 
         return comment
-    
+
     def get_author(self, instance):
         return instance.author.username
-    
+
     def get_issue(self, instance):
         return instance.issue.title
-    
