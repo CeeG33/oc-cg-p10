@@ -31,6 +31,7 @@ class ProjectListSerializer(ModelSerializer):
 
 class ProjectDetailSerializer(ModelSerializer):
     author = SerializerMethodField()
+    contributors_name = SerializerMethodField()
 
     class Meta:
         model = Project
@@ -39,10 +40,12 @@ class ProjectDetailSerializer(ModelSerializer):
             "name",
             "author",
             "contributors",
+            "contributors_name",
             "type",
             "description",
             "time_created",
         ]
+    read_only_fields = ["author", "contributors_name"]
 
     def create(self, validated_data):
         user = self.context["request"].user
@@ -72,9 +75,9 @@ class ProjectDetailSerializer(ModelSerializer):
 
         return instance
 
-    # def get_contributors(self, instance):
-    #     usernames = [contributor.username for contributor in contributors]
-    #     return usernames
+    def get_contributors_name(self, instance):
+        usernames = [contributor.username for contributor in instance.contributors.all()]
+        return usernames
     
     def get_author(self, instance):
         return instance.author.username
@@ -104,6 +107,7 @@ class IssueListSerializer(ModelSerializer):
 class IssueDetailSerializer(ModelSerializer):
     project = SerializerMethodField()
     author = SerializerMethodField()
+    accountable_name = SerializerMethodField()
 
     class Meta:
         model = Issue
@@ -117,9 +121,10 @@ class IssueDetailSerializer(ModelSerializer):
             "priority",
             "description",
             "accountable",
+            "accountable_name",
             "time_created",
         ]
-        read_only_fields = ["author"]
+        read_only_fields = ["author", "accountable_name"]
 
     def create(self, validated_data):
         user = self.context["request"].user
@@ -151,6 +156,9 @@ class IssueDetailSerializer(ModelSerializer):
     
     def get_author(self, instance):
         return instance.author.username
+    
+    def get_accountable_name(self, instance):
+        return instance.accountable_user.username
         
 
 class CommentListSerializer(ModelSerializer):
