@@ -12,6 +12,7 @@ class ProjectListSerializer(ModelSerializer):
     class Meta:
         model = Project
         fields = [
+            "id",
             "name",
             "author",
             "contributors",
@@ -56,11 +57,24 @@ class ProjectDetailSerializer(ModelSerializer):
             project.contributors.add(contributor)
 
         return project
+    
+    def update(self, instance, validated_data):
+        instance.contributors.clear()
 
-    def get_contributors(self, instance):
-        contributors = instance.contributors.all()
-        usernames = [contributor.username for contributor in contributors]
-        return usernames
+        contributors_data = validated_data.pop("contributors", [])
+
+        instance.contributors.add(instance.author)
+        
+        instance = super().update(instance, validated_data)
+
+        for contributor in contributors_data:
+            instance.contributors.add(contributor)
+
+        return instance
+
+    # def get_contributors(self, instance):
+    #     usernames = [contributor.username for contributor in contributors]
+    #     return usernames
     
     def get_author(self, instance):
         return instance.author.username
@@ -73,6 +87,7 @@ class IssueListSerializer(ModelSerializer):
     class Meta:
         model = Issue
         fields = [
+            "id",
             "author",
             "title",
             "accountable",
@@ -89,11 +104,11 @@ class IssueListSerializer(ModelSerializer):
 class IssueDetailSerializer(ModelSerializer):
     project = SerializerMethodField()
     author = SerializerMethodField()
-    accountable = SerializerMethodField()
 
     class Meta:
         model = Issue
         fields = [
+            "id",
             "author",
             "project",
             "title",
@@ -110,21 +125,29 @@ class IssueDetailSerializer(ModelSerializer):
         user = self.context["request"].user
         validated_data["author"] = user
 
+        project_id = self.context["view"].kwargs.get("project_pk")
+        project = Project.objects.get(pk=project_id)
+        validated_data["project"] = project
+
+        accountable = validated_data.get("accountable")
+        if accountable and accountable not in project.contributors.all():
+            raise ValidationError("Error : You can only select contributors to this project.")
+
         issue = Issue.objects.create(**validated_data)
 
         return issue
     
+    def update(self, instance, validated_data):
+        accountable = validated_data.get("accountable")
+        if accountable and accountable not in instance.project.contributors.all():
+            raise ValidationError("Error : You can only select contributors to this project.")
+
+        instance = super().update(instance, validated_data)
+
+        return instance
+    
     def get_project(self, instance):
         return self.instance.project.name
-
-    def validate_project(self, value):
-        user = self.context.get("request").user
-        if not value.contributors.filter(pk=user.pk).exists():
-            raise ValidationError("You are not a contributor to this project.")
-        return value
-    
-    def get_accountable(self, instance):
-        return instance.accountable.username
     
     def get_author(self, instance):
         return instance.author.username
@@ -136,7 +159,7 @@ class CommentListSerializer(ModelSerializer):
     
     class Meta:
         model = Comment
-        fields = ["author", "title", "issue", "uuid", "time_created"]
+        fields = ["id", "author", "title", "issue", "uuid", "time_created"]
         read_only_fields = ["author"]
 
     def get_author(self, instance):
@@ -148,25 +171,28 @@ class CommentListSerializer(ModelSerializer):
 
 class CommentDetailSerializer(ModelSerializer):
     author = SerializerMethodField()
+    issue = SerializerMethodField()
     
     class Meta:
         model = Comment
-        fields = ["author", "title", "issue", "description", "uuid", "time_created"]
+        fields = ["id", "author", "title", "issue", "description", "uuid", "time_created"]
         read_only_fields = ["author"]
 
     def create(self, validated_data):
         user = self.context["request"].user
         validated_data["author"] = user
 
+        issue_id = self.context["view"].kwargs.get("issue_pk")
+        issue = Issue.objects.get(pk=issue_id)
+        validated_data["issue"] = issue
+
         comment = Comment.objects.create(**validated_data)
 
         return comment
-
-    def validate_issue(self, value):
-        user = self.context.get("request").user
-        if not value.project.contributors.filter(pk=user.pk).exists():
-            raise ValidationError("You are not a contributor to this project.")
-        return value
     
     def get_author(self, instance):
         return instance.author.username
+    
+    def get_issue(self, instance):
+        return instance.issue.title
+    

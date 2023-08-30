@@ -8,7 +8,7 @@ class IsProjectAuthorOrContributorReadOnly(BasePermission):
         return bool(request.user and request.user.is_authenticated)
 
     def has_object_permission(self, request, view, obj):
-        self.message = "Access forbidden : you are not a contributor on this project."
+        self.message = "Access forbidden : You are not a contributor on the project."
         if request.method in SAFE_METHODS:
             return bool(
                 request.user
@@ -16,6 +16,7 @@ class IsProjectAuthorOrContributorReadOnly(BasePermission):
                 and request.user in obj.contributors.all()
             )
         else:
+            self.message = "Action restricted : Only author can update or delete the project."
             return bool(
                 request.user
                 and request.user.is_authenticated
@@ -24,8 +25,8 @@ class IsProjectAuthorOrContributorReadOnly(BasePermission):
 
 
 class IsIssueAuthorOrContributorReadOnly(BasePermission):
-    message = "Access forbidden : you are not a contributor on this project."
     def has_permission(self, request, view):
+        self.message = "Access forbidden : You are not authenticated."
         if not request.user.is_authenticated:
             return False
         
@@ -40,23 +41,24 @@ class IsIssueAuthorOrContributorReadOnly(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         if request.method in SAFE_METHODS:
+            self.message = "Access forbidden : You are not a contributor on the project."
             return bool(
                 request.user
                 and request.user.is_authenticated
                 and request.user in obj.project.contributors.all()
             )
         else:
+            self.message = "Action restricted : Only author can update or delete the issue."
             return bool(
                 request.user
                 and request.user.is_authenticated
                 and request.user == obj.author
-                and request.user in obj.project.contributors.all()
             )
 
 
 class IsCommentAuthorOrContributorReadOnly(BasePermission):
-    message = "Access forbidden : you are not a contributor on this project."
     def has_permission(self, request, view):
+        self.message = "Access forbidden : You are not authenticated."
         if not request.user.is_authenticated:
             return False
         
@@ -71,12 +73,14 @@ class IsCommentAuthorOrContributorReadOnly(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         if request.method in SAFE_METHODS:
+            self.message = "Access forbidden : You are not a contributor on the project."
             return bool(
                 request.user
                 and request.user.is_authenticated
-                and obj.issue.project.contributors.filter(pk=request.user.pk).exists()
+                and request.user in obj.issue.project.contributors.all()
             )
         else:
+            self.message = "Action restricted : Only author can update or delete the comment."
             return bool(
                 request.user
                 and request.user.is_authenticated
