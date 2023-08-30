@@ -11,6 +11,19 @@ from user.serializers import (
 
 
 class UserViewset(ModelViewSet):
+    """
+    Viewset for managing user profiles.
+
+    Attributes:
+        detail_serializer_class: The serializer class for detailed user information.
+        serializer_class: The serializer class for user list information.
+        permission_classes: The permission classes for the viewset.
+
+    Methods:
+        get_queryset(): Retrieves the queryset of all users.
+        create(request, *args, **kwargs): Creates a new user profile.
+        get_serializer_class(): Determines the appropriate serializer class based on the action.
+    """
     detail_serializer_class = UserDetailSerializer
     serializer_class = UserListSerializer
     permission_classes = [AllowAny]
@@ -36,6 +49,16 @@ class UserViewset(ModelViewSet):
 
 
 class ContributorViewset(ModelViewSet):
+    """
+    Viewset for managing contributors.
+
+    Attributes:
+        serializer_class: The serializer class for contributors.
+        permission_classes: The permission classes for the viewset.
+
+    Methods:
+        get_queryset(): Retrieves the queryset of all contributors.
+    """
     serializer_class = ContributorSerializer
     permission_classes = [AllowAny]
 

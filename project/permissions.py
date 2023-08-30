@@ -3,11 +3,28 @@ from project.models import Project
 
 
 class IsProjectAuthorOrContributorReadOnly(BasePermission):
+    """
+    Custom permission to restrict access to project-related actions.
+
+    Attributes:
+        message: The error message to display for permission denial.
+
+    Methods:
+        has_permission(request, view): Determines if the user has general permission (view the list).
+        has_object_permission(request, view, obj): Determines if the user has object-specific permission.
+
+    Usage:
+        Apply this permission class to project-related views to control access.
+    """
     def has_permission(self, request, view):
         self.message = "Access forbidden : You are not authenticated."
         return bool(request.user and request.user.is_authenticated)
 
     def has_object_permission(self, request, view, obj):
+        """
+        Only contributors can read the project.
+        Only the author can update or delete the project.
+        """
         self.message = "Access forbidden : You are not a contributor on the project."
         if request.method in SAFE_METHODS:
             return bool(
@@ -27,6 +44,19 @@ class IsProjectAuthorOrContributorReadOnly(BasePermission):
 
 
 class IsIssueAuthorOrContributorReadOnly(BasePermission):
+    """
+    Custom permission to restrict access to issue-related actions.
+
+    Attributes:
+        message: The error message to display for permission denial.
+
+    Methods:
+        has_permission(request, view): Determines if the user has general permission (view the issues of a project).
+        has_object_permission(request, view, obj): Determines if the user has object-specific permission.
+
+    Usage:
+        Apply this permission class to issue-related views to control access.
+    """
     def has_permission(self, request, view):
         self.message = "Access forbidden : You are not authenticated."
         if not request.user.is_authenticated:
@@ -44,6 +74,10 @@ class IsIssueAuthorOrContributorReadOnly(BasePermission):
         return True
 
     def has_object_permission(self, request, view, obj):
+        """
+        Only contributors to the project can read the issues related to the project.
+        Only the author can update or delete the issue.
+        """
         if request.method in SAFE_METHODS:
             self.message = (
                 "Access forbidden : You are not a contributor on the project."
@@ -65,6 +99,19 @@ class IsIssueAuthorOrContributorReadOnly(BasePermission):
 
 
 class IsCommentAuthorOrContributorReadOnly(BasePermission):
+    """
+    Custom permission to restrict access to comment-related actions.
+
+    Attributes:
+        message: The error message to display for permission denial.
+
+    Methods:
+        has_permission(request, view): Determines if the user has general permission (view comments of a specific issue).
+        has_object_permission(request, view, obj): Determines if the user has object-specific permission.
+
+    Usage:
+        Apply this permission class to comment-related views to control access.
+    """
     def has_permission(self, request, view):
         self.message = "Access forbidden : You are not authenticated."
         if not request.user.is_authenticated:
@@ -82,6 +129,10 @@ class IsCommentAuthorOrContributorReadOnly(BasePermission):
         return True
 
     def has_object_permission(self, request, view, obj):
+        """
+        Only contributors to the project can read the comments related to the issue.
+        Only the author can update or delete the comment.
+        """
         if request.method in SAFE_METHODS:
             self.message = (
                 "Access forbidden : You are not a contributor on the project."

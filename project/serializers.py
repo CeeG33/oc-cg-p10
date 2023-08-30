@@ -10,6 +10,13 @@ from project.models import Project, Issue, Comment
 
 
 class ProjectListSerializer(ModelSerializer):
+    """
+    Serializer for showing multiple projects informations as a list.
+
+    Methods:
+        get_contributors(instance): Retrieves usernames of contributors for a project.
+        get_author(instance): Retrieves the username of the project's author.
+    """
     contributors = SerializerMethodField()
     author = SerializerMethodField()
 
@@ -34,6 +41,15 @@ class ProjectListSerializer(ModelSerializer):
 
 
 class ProjectDetailSerializer(ModelSerializer):
+    """
+    Serializer for showing detailed project information.
+
+    Methods:
+        create(validated_data): Creates a new project with contributors.
+        update(instance, validated_data): Updates a project's information and contributors.
+        get_contributors_name(instance): Retrieves usernames of contributors for a project.
+        get_author(instance): Retrieves the username of the project's author.
+    """
     author = SerializerMethodField()
     contributors_name = SerializerMethodField()
 
@@ -53,6 +69,9 @@ class ProjectDetailSerializer(ModelSerializer):
     read_only_fields = ["author", "contributors_name"]
 
     def create(self, validated_data):
+        """
+        The user is automatically added as author and contributor on the project.
+        """
         user = self.context["request"].user
         validated_data["author"] = user
 
@@ -67,6 +86,9 @@ class ProjectDetailSerializer(ModelSerializer):
         return project
 
     def update(self, instance, validated_data):
+        """
+        The contributors field update will superseed the previous contributors.
+        """
         instance.contributors.clear()
 
         contributors_data = validated_data.pop("contributors", [])
@@ -91,6 +113,13 @@ class ProjectDetailSerializer(ModelSerializer):
 
 
 class IssueListSerializer(ModelSerializer):
+    """
+    Serializer for showing multiple issues informations as a list.
+
+    Methods:
+        get_accountable(instance): Retrieves the username of the accountable user.
+        get_author(instance): Retrieves the username of the issue's author.
+    """
     author = SerializerMethodField()
     accountable = SerializerMethodField()
 
@@ -112,6 +141,16 @@ class IssueListSerializer(ModelSerializer):
 
 
 class IssueDetailSerializer(ModelSerializer):
+    """
+    Serializer for displaying detailed issue information.
+
+    Methods:
+        create(validated_data): Creates a new issue instance.
+        update(instance, validated_data): Updates an existing issue instance.
+        get_project(instance): Retrieves the name of the associated project.
+        get_author(instance): Retrieves the username of the issue's author.
+        get_accountable_name(instance): Retrieves the username of the accountable user.
+    """
     project = SerializerMethodField()
     author = SerializerMethodField()
     accountable_name = SerializerMethodField()
@@ -134,6 +173,11 @@ class IssueDetailSerializer(ModelSerializer):
         read_only_fields = ["author", "accountable_name"]
 
     def create(self, validated_data):
+        """
+        The user is automatically added as author of the issue.
+        The project in which the issue is created is automatically added as related project.
+        Can specify a user as accountable only if he is contributor to the project.
+        """
         user = self.context["request"].user
         validated_data["author"] = user
 
@@ -152,6 +196,9 @@ class IssueDetailSerializer(ModelSerializer):
         return issue
 
     def update(self, instance, validated_data):
+        """
+        Can specify a user as accountable only if he is contributor to the project.
+        """
         accountable = validated_data.get("accountable")
         if accountable and accountable not in instance.project.contributors.all():
             raise ValidationError(
@@ -173,6 +220,13 @@ class IssueDetailSerializer(ModelSerializer):
 
 
 class CommentListSerializer(ModelSerializer):
+    """
+    Serializer for displaying multiple comments informations as a list.
+
+    Methods:
+        get_author(instance): Retrieves the username of the comment's author.
+        get_issue(instance): Retrieves the title of the associated issue.
+    """
     author = SerializerMethodField()
     issue = SerializerMethodField()
 
@@ -189,6 +243,14 @@ class CommentListSerializer(ModelSerializer):
 
 
 class CommentDetailSerializer(ModelSerializer):
+    """
+    Serializer for displaying a comment's detailed information.
+
+    Methods:
+        create(validated_data): Creates a new comment instance.
+        get_author(instance): Retrieves the username of the comment's author.
+        get_issue(instance): Retrieves the title of the associated issue.
+    """
     author = SerializerMethodField()
     issue = SerializerMethodField()
 
@@ -206,6 +268,10 @@ class CommentDetailSerializer(ModelSerializer):
         read_only_fields = ["author"]
 
     def create(self, validated_data):
+        """
+        The user is automatically added as author of the comment.
+        The issue in which the comment is created is automatically added as related issue.
+        """
         user = self.context["request"].user
         validated_data["author"] = user
 

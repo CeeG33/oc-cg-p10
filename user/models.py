@@ -9,6 +9,18 @@ from project.models import Project
 
 
 class User(AbstractUser):
+    """
+    Represents a user of the API.
+
+    Attributes:
+        username (str): The unique username of the user.
+        age (int): The age of the user.
+        can_be_contacted (bool): Whether the user can be contacted.
+        can_data_be_shared (bool): Whether the user allows his personal informations to be shared.
+
+    Methods:
+        __str__(): Returns the string representation of the user.
+    """
     username = models.CharField(max_length=15, unique=True)
 
     age = models.PositiveIntegerField(
@@ -24,6 +36,20 @@ class User(AbstractUser):
 
 
 class Contributor(models.Model):
+    """
+    Represents a user who can interact with specific projects.
+
+    Attributes:
+        user (User): The user identified as contributor.
+        project (Project): The project to which the contributor is associated.
+
+    Meta:
+        unique_together (tuple): Ensures unique user-project pairs.
+
+    Methods:
+        create_contributors(sender, instance, created, **kwargs): Creates contributors when a project is created.
+        auto_delete_contributors(sender, instance, **kwargs): Deletes contributors when a project is deleted.
+    """
     user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="user"
     )
