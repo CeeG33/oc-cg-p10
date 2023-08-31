@@ -50,7 +50,11 @@ class Migration(migrations.Migration):
                 (
                     "type",
                     models.CharField(
-                        choices=[("B", "Bug"), ("F", "Feature"), ("T", "Task")],
+                        choices=[
+                            ("B", "Bug"),
+                            ("F", "Feature"),
+                            ("T", "Task"),
+                        ],
                         max_length=3,
                     ),
                 ),

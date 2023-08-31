@@ -14,8 +14,12 @@ black = "^23.7.0"
 flake8 = "^6.1.0"
 djangorestframework-simplejwt = "^5.3.0"
 drf-nested-routers = "^0.93.4"
+docformatter = "^1.7.5"
 
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 79

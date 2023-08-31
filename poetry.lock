@@ -238,6 +238,24 @@ python-jose = ["python-jose (==3.3.0)"]
 test = ["cryptography", "pytest", "pytest-cov", "pytest-django", "pytest-xdist", "tox"]
 
 [[package]]
+name = "docformatter"
+version = "1.7.5"
+description = "Formats docstrings to follow PEP 257"
+optional = false
+python-versions = ">=3.7,<4.0"
+files = [
+    {file = "docformatter-1.7.5-py3-none-any.whl", hash = "sha256:a24f5545ed1f30af00d106f5d85dc2fce4959295687c24c8f39f5263afaf9186"},
+    {file = "docformatter-1.7.5.tar.gz", hash = "sha256:ffed3da0daffa2e77f80ccba4f0e50bfa2755e1c10e130102571c890a61b246e"},
+]
+
+[package.dependencies]
+charset_normalizer = ">=3.0.0,<4.0.0"
+untokenize = ">=0.1.1,<0.2.0"
+
+[package.extras]
+tomli = ["tomli (>=2.0.0,<3.0.0)"]
+
+[[package]]
 name = "drf-nested-routers"
 version = "0.93.4"
 description = "Nested resources for the Django Rest Framework"
@@ -437,6 +455,16 @@ files = [
 ]
 
 [[package]]
+name = "untokenize"
+version = "0.1.1"
+description = "Transforms tokens into original source code (while preserving whitespace)."
+optional = false
+python-versions = "*"
+files = [
+    {file = "untokenize-0.1.1.tar.gz", hash = "sha256:3865dbbbb8efb4bb5eaa72f1be7f3e0be00ea8b7f125c69cbd1f5fda926f37a2"},
+]
+
+[[package]]
 name = "urllib3"
 version = "2.0.4"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
@@ -456,4 +484,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "bc1b5221b5f4d4e40172bcad50c05413c887ea3f303a7292302b2300032f6342"
+content-hash = "b3f4dea1b60711abaacc1a55df3070312fd548270f8362a845f26f4030333bd2"

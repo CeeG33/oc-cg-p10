@@ -1,8 +1,8 @@
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from user.models import User, Contributor
+from user.permissions import UserPrivacy
 from user.serializers import (
     UserDetailSerializer,
     UserListSerializer,
@@ -11,8 +11,7 @@ from user.serializers import (
 
 
 class UserViewset(ModelViewSet):
-    """
-    Viewset for managing user profiles.
+    """Viewset for managing user profiles.
 
     Attributes:
         detail_serializer_class: The serializer class for detailed user information.
@@ -24,9 +23,10 @@ class UserViewset(ModelViewSet):
         create(request, *args, **kwargs): Creates a new user profile.
         get_serializer_class(): Determines the appropriate serializer class based on the action.
     """
+
     detail_serializer_class = UserDetailSerializer
     serializer_class = UserListSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [UserPrivacy]
 
     def get_queryset(self):
         return User.objects.all()
@@ -34,7 +34,7 @@ class UserViewset(ModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = UserDetailSerializer(data=request.data)
         if serializer.is_valid():
-            user = serializer.create(serializer.validated_data)
+            serializer.create(serializer.validated_data)
             return Response("User created successfully !")
         else:
             return Response(serializer.errors)
@@ -49,8 +49,7 @@ class UserViewset(ModelViewSet):
 
 
 class ContributorViewset(ModelViewSet):
-    """
-    Viewset for managing contributors.
+    """Viewset for managing contributors.
 
     Attributes:
         serializer_class: The serializer class for contributors.
@@ -59,8 +58,9 @@ class ContributorViewset(ModelViewSet):
     Methods:
         get_queryset(): Retrieves the queryset of all contributors.
     """
+
     serializer_class = ContributorSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [UserPrivacy]
 
     def get_queryset(self):
         return Contributor.objects.all()

@@ -9,8 +9,7 @@ from project.models import Project
 
 
 class User(AbstractUser):
-    """
-    Represents a user of the API.
+    """Represents a user of the API.
 
     Attributes:
         username (str): The unique username of the user.
@@ -21,6 +20,7 @@ class User(AbstractUser):
     Methods:
         __str__(): Returns the string representation of the user.
     """
+
     username = models.CharField(max_length=15, unique=True)
 
     age = models.PositiveIntegerField(
@@ -36,8 +36,7 @@ class User(AbstractUser):
 
 
 class Contributor(models.Model):
-    """
-    Represents a user who can interact with specific projects.
+    """Represents a user who can interact with specific projects.
 
     Attributes:
         user (User): The user identified as contributor.
@@ -50,8 +49,11 @@ class Contributor(models.Model):
         create_contributors(sender, instance, created, **kwargs): Creates contributors when a project is created.
         auto_delete_contributors(sender, instance, **kwargs): Deletes contributors when a project is deleted.
     """
+
     user = models.ForeignKey(
-        to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="user"
+        to=settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="user",
     )
 
     project = models.ForeignKey(

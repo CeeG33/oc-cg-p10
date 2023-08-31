@@ -49,7 +49,9 @@ class Issue(models.Model):
         ("F", "Finished"),
     ]
 
-    status = models.fields.CharField(max_length=3, choices=STATUS_CHOICES, default="TD")
+    status = models.fields.CharField(
+        max_length=3, choices=STATUS_CHOICES, default="TD"
+    )
 
     TYPE_CHOICES = [
         ("B", "Bug"),
