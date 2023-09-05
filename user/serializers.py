@@ -11,9 +11,6 @@ class UserDetailSerializer(ModelSerializer):
             model (User): The User model to serialize.
             fields (list): List of fields to include in the serialized representation.
             extra_kwargs (dict): Extra keyword arguments for fields.
-
-    Methods:
-        create(validated_data): Create a new user instance based on validated data.
     """
 
     class Meta:
@@ -49,7 +46,6 @@ class UserListSerializer(ModelSerializer):
             model (User): The User model to serialize.
             fields (list): List of fields to include in the serialized representation.
     """
-
     class Meta:
         model = User
         fields = ["id", "username"]
@@ -63,7 +59,6 @@ class ContributorSerializer(ModelSerializer):
             model (Contributor): The Contributor model to serialize.
             fields (list): List of fields to include in the serialized representation.
     """
-
     class Meta:
         model = Contributor
         fields = ["user", "project"]

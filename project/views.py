@@ -48,9 +48,6 @@ class ProjectViewset(MultipleSerializerMixin, ModelViewSet):
         serializer_class: The default serializer class for listing and creating projects.
         detail_serializer_class: The serializer class for detailed project actions.
         permission_classes: The permission classes for controlling project access.
-
-    Methods:
-        get_queryset(): Returns the queryset of projects in which the current user is contributor.
     """
 
     serializer_class = ProjectListSerializer
@@ -58,6 +55,7 @@ class ProjectViewset(MultipleSerializerMixin, ModelViewSet):
     permission_classes = [IsProjectAuthorOrContributorReadOnly]
 
     def get_queryset(self):
+        """Returns the queryset of projects in which the current user is contributor."""
         return Project.objects.filter(contributors=self.request.user)
 
 
@@ -68,9 +66,6 @@ class IssueViewset(MultipleSerializerMixin, ModelViewSet):
         serializer_class: The default serializer class for listing and creating issues.
         detail_serializer_class: The serializer class for detailed issue actions.
         permission_classes: The permission classes for controlling issue access.
-
-    Methods:
-        get_queryset(): Returns the queryset of issues associated with the current project.
     """
 
     serializer_class = IssueListSerializer
@@ -78,6 +73,7 @@ class IssueViewset(MultipleSerializerMixin, ModelViewSet):
     permission_classes = [IsIssueAuthorOrContributorReadOnly]
 
     def get_queryset(self):
+        """Returns the queryset of issues associated with the current project."""
         return Issue.objects.filter(project=self.kwargs["project_pk"])
 
 
@@ -88,9 +84,6 @@ class CommentViewset(MultipleSerializerMixin, ModelViewSet):
         serializer_class: The default serializer class for listing and creating comments.
         detail_serializer_class: The serializer class for detailed comment actions.
         permission_classes: The permission classes for controlling comment access.
-
-    Methods:
-        get_queryset(): Returns the queryset of comments associated with the current issue.
     """
 
     serializer_class = CommentListSerializer
@@ -98,4 +91,5 @@ class CommentViewset(MultipleSerializerMixin, ModelViewSet):
     permission_classes = [IsCommentAuthorOrContributorReadOnly]
 
     def get_queryset(self):
+        """Returns the queryset of comments associated with the current issue."""
         return Comment.objects.filter(issue=self.kwargs["issue_pk"])

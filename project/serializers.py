@@ -8,13 +8,7 @@ from project.models import Project, Issue, Comment
 
 
 class ProjectListSerializer(ModelSerializer):
-    """Serializer for showing multiple projects informations as a list.
-
-    Methods:
-        get_contributors(instance): Retrieves usernames of contributors for a project.
-        get_author(instance): Retrieves the username of the project's author.
-    """
-
+    """Serializer for showing multiple projects informations as a list."""
     contributors = SerializerMethodField()
     author = SerializerMethodField()
 
@@ -30,24 +24,18 @@ class ProjectListSerializer(ModelSerializer):
         read_only_fields = ["author"]
 
     def get_contributors(self, instance):
+        """Retrieves usernames of contributors for a project."""
         contributors = instance.contributors.all()
         usernames = [contributor.username for contributor in contributors]
         return usernames
 
     def get_author(self, instance):
+        """Retrieves the username of the project's author."""
         return instance.author.username
 
 
 class ProjectDetailSerializer(ModelSerializer):
-    """Serializer for showing detailed project information.
-
-    Methods:
-        create(validated_data): Creates a new project with contributors.
-        update(instance, validated_data): Updates a project's information and contributors.
-        get_contributors_name(instance): Retrieves usernames of contributors for a project.
-        get_author(instance): Retrieves the username of the project's author.
-    """
-
+    """Serializer for showing detailed project information."""
     author = SerializerMethodField()
     contributors_name = SerializerMethodField()
 
@@ -67,8 +55,10 @@ class ProjectDetailSerializer(ModelSerializer):
     read_only_fields = ["author", "contributors_name"]
 
     def create(self, validated_data):
-        """The user is automatically added as author and contributor on the
-        project."""
+        """Creates a new project with contributors.
+        The user is automatically added as author and contributor on the
+        project.
+        """
         user = self.context["request"].user
         validated_data["author"] = user
 
@@ -83,8 +73,10 @@ class ProjectDetailSerializer(ModelSerializer):
         return project
 
     def update(self, instance, validated_data):
-        """The contributors field update will superseed the previous
-        contributors."""
+        """Updates a project's information and contributors.
+        The contributors field update will superseed the previous
+        contributors.
+        """
         if validated_data.get("contributors"):
             instance.contributors.clear()
 
@@ -102,23 +94,19 @@ class ProjectDetailSerializer(ModelSerializer):
         return instance
 
     def get_contributors_name(self, instance):
+        """Retrieves usernames of contributors for a project."""
         usernames = [
             contributor.username for contributor in instance.contributors.all()
         ]
         return usernames
 
     def get_author(self, instance):
+        """Retrieves the username of the project's author."""
         return instance.author.username
 
 
 class IssueListSerializer(ModelSerializer):
-    """Serializer for showing multiple issues informations as a list.
-
-    Methods:
-        get_accountable(instance): Retrieves the username of the accountable user.
-        get_author(instance): Retrieves the username of the issue's author.
-    """
-
+    """Serializer for showing multiple issues informations as a list."""
     author = SerializerMethodField()
     accountable = SerializerMethodField()
 
@@ -133,23 +121,16 @@ class IssueListSerializer(ModelSerializer):
         ]
 
     def get_accountable(self, instance):
+        """Retrieves the username of the accountable user."""
         return instance.accountable.username
 
     def get_author(self, instance):
+        """Retrieves the username of the issue's author."""
         return instance.author.username
 
 
 class IssueDetailSerializer(ModelSerializer):
-    """Serializer for displaying detailed issue information.
-
-    Methods:
-        create(validated_data): Creates a new issue instance.
-        update(instance, validated_data): Updates an existing issue instance.
-        get_project(instance): Retrieves the name of the associated project.
-        get_author(instance): Retrieves the username of the issue's author.
-        get_accountable_name(instance): Retrieves the username of the accountable user.
-    """
-
+    """Serializer for displaying detailed issue information."""
     project = SerializerMethodField()
     author = SerializerMethodField()
     accountable_name = SerializerMethodField()
@@ -172,7 +153,9 @@ class IssueDetailSerializer(ModelSerializer):
         read_only_fields = ["author", "accountable_name"]
 
     def create(self, validated_data):
-        """The user is automatically added as author of the issue.
+        """Creates a new issue instance.
+        
+        The user is automatically added as author of the issue.
 
         The project in which the issue is created is automatically added
         as related project. Can specify a user as accountable only if he
@@ -196,8 +179,11 @@ class IssueDetailSerializer(ModelSerializer):
         return issue
 
     def update(self, instance, validated_data):
-        """Can specify a user as accountable only if he is contributor to the
-        project."""
+        """Updates an existing issue instance.
+        
+        Can specify a user as accountable only if he is contributor to the
+        project.
+        """
         accountable = validated_data.get("accountable")
         if (
             accountable
@@ -212,23 +198,20 @@ class IssueDetailSerializer(ModelSerializer):
         return instance
 
     def get_project(self, instance):
+        """Retrieves the name of the associated project."""
         return self.instance.project.name
 
     def get_author(self, instance):
+        """Retrieves the username of the issue's author."""
         return instance.author.username
 
     def get_accountable_name(self, instance):
+        """Retrieves the username of the accountable user."""
         return instance.accountable.username
 
 
 class CommentListSerializer(ModelSerializer):
-    """Serializer for displaying multiple comments informations as a list.
-
-    Methods:
-        get_author(instance): Retrieves the username of the comment's author.
-        get_issue(instance): Retrieves the title of the associated issue.
-    """
-
+    """Serializer for displaying multiple comments informations as a list."""
     author = SerializerMethodField()
     issue = SerializerMethodField()
 
@@ -238,21 +221,16 @@ class CommentListSerializer(ModelSerializer):
         read_only_fields = ["author"]
 
     def get_author(self, instance):
+        """Retrieves the username of the comment's author."""
         return instance.author.username
 
     def get_issue(self, instance):
+        """Retrieves the title of the associated issue."""
         return instance.issue.title
 
 
 class CommentDetailSerializer(ModelSerializer):
-    """Serializer for displaying a comment's detailed information.
-
-    Methods:
-        create(validated_data): Creates a new comment instance.
-        get_author(instance): Retrieves the username of the comment's author.
-        get_issue(instance): Retrieves the title of the associated issue.
-    """
-
+    """Serializer for displaying a comment's detailed information."""
     author = SerializerMethodField()
     issue = SerializerMethodField()
 
@@ -270,7 +248,9 @@ class CommentDetailSerializer(ModelSerializer):
         read_only_fields = ["author", "issue"]
 
     def create(self, validated_data):
-        """The user is automatically added as author of the comment.
+        """Creates a new comment instance.
+        
+        The user is automatically added as author of the comment.
 
         The issue in which the comment is created is automatically added
         as related issue.
@@ -287,7 +267,9 @@ class CommentDetailSerializer(ModelSerializer):
         return comment
 
     def get_author(self, instance):
+        """Retrieves the username of the comment's author."""
         return instance.author.username
 
     def get_issue(self, instance):
+        """Retrieves the title of the associated issue."""
         return instance.issue.title

@@ -16,9 +16,6 @@ class User(AbstractUser):
         age (int): The age of the user.
         can_be_contacted (bool): Whether the user can be contacted.
         can_data_be_shared (bool): Whether the user allows his personal informations to be shared.
-
-    Methods:
-        __str__(): Returns the string representation of the user.
     """
 
     username = models.CharField(max_length=15, unique=True)
@@ -32,6 +29,7 @@ class User(AbstractUser):
     can_data_be_shared = models.BooleanField()
 
     def __str__(self):
+        """Returns the string representation of the user."""
         return self.username
 
 
@@ -44,10 +42,6 @@ class Contributor(models.Model):
 
     Meta:
         unique_together (tuple): Ensures unique user-project pairs.
-
-    Methods:
-        create_contributors(sender, instance, created, **kwargs): Creates contributors when a project is created.
-        auto_delete_contributors(sender, instance, **kwargs): Deletes contributors when a project is deleted.
     """
 
     user = models.ForeignKey(
@@ -68,10 +62,12 @@ class Contributor(models.Model):
 
     @receiver(post_save, sender=Project)
     def create_contributors(sender, instance, created, **kwargs):
+        """Creates contributors when a project is created."""
         if created:
             for user in instance.contributors.all():
                 Contributor.objects.create(user=user, project=instance)
 
     @receiver(post_delete, sender=Project)
     def auto_delete_contributors(sender, instance, **kwargs):
+        """Deletes contributors when a project is deleted."""
         Contributor.objects.filter(project=instance).delete()

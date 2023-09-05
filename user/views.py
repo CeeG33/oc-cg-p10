@@ -17,11 +17,6 @@ class UserViewset(ModelViewSet):
         detail_serializer_class: The serializer class for detailed user information.
         serializer_class: The serializer class for user list information.
         permission_classes: The permission classes for the viewset.
-
-    Methods:
-        get_queryset(): Retrieves the queryset of all users.
-        create(request, *args, **kwargs): Creates a new user profile.
-        get_serializer_class(): Determines the appropriate serializer class based on the action.
     """
 
     detail_serializer_class = UserDetailSerializer
@@ -29,9 +24,11 @@ class UserViewset(ModelViewSet):
     permission_classes = [UserPrivacy]
 
     def get_queryset(self):
+        """Retrieves the queryset of all users."""
         return User.objects.all()
 
     def create(self, request, *args, **kwargs):
+        """Creates a new user profile."""
         serializer = UserDetailSerializer(data=request.data)
         if serializer.is_valid():
             serializer.create(serializer.validated_data)
@@ -40,6 +37,7 @@ class UserViewset(ModelViewSet):
             return Response(serializer.errors)
 
     def get_serializer_class(self):
+        """Determines the appropriate serializer class based on the action."""
         if (
             self.action in ["retrieve", "create", "update", "partial_update"]
             and self.detail_serializer_class is not None
@@ -54,13 +52,11 @@ class ContributorViewset(ModelViewSet):
     Attributes:
         serializer_class: The serializer class for contributors.
         permission_classes: The permission classes for the viewset.
-
-    Methods:
-        get_queryset(): Retrieves the queryset of all contributors.
     """
 
     serializer_class = ContributorSerializer
     permission_classes = [UserPrivacy]
 
     def get_queryset(self):
+        """get_queryset(): Retrieves the queryset of all contributors."""
         return Contributor.objects.all()

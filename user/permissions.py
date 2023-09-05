@@ -7,20 +7,19 @@ class UserPrivacy(BasePermission):
     Attributes:
         message: The error message to display for permission denial.
 
-    Methods:
-        has_permission(request, view): Determines if the user has general permission (view the list).
-        has_object_permission(request, view, obj): Determines if the user has object-specific permission.
-
     Usage:
         Apply this permission class to project-related views to control access.
     """
 
     def has_permission(self, request, view):
+        """Determines if the user has general permission (view the list)."""
         self.message = "Access forbidden : You are not authenticated."
         return bool(request.user and request.user.is_authenticated)
 
     def has_object_permission(self, request, view, obj):
-        """We can access a user's detailed informations only if he allowed his
+        """Determines if the user has object-specific permission.
+        
+        We can access a user's detailed informations only if he allowed his
         data to be shared.
 
         The user is the only one to update his informations or delete

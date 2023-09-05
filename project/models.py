@@ -5,6 +5,16 @@ from uuid import uuid4
 
 
 class Project(models.Model):
+    """Represents a project managed within the SoftDesk Support system.
+
+    Attributes:
+        author (ForeignKey): The user who created the project.
+        name (CharField): The name of the project (unique).
+        type (CharField): The type of the project (choices: 'BE', 'FE', 'IOS', 'AND').
+        description (TextField): A description of the project.
+        contributors (ManyToManyField): Users who contribute to the project.
+        time_created (DateTimeField): The date and time the project was created.
+    """
     author = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -29,6 +39,19 @@ class Project(models.Model):
 
 
 class Issue(models.Model):
+    """Represents an issue or task within a project.
+
+    Attributes:
+        author (ForeignKey): The user who created the issue.
+        title (CharField): The title of the issue (unique within the project).
+        project (ForeignKey): The project to which the issue belongs.
+        description (TextField): A description of the issue.
+        status (CharField): The status of the issue (choices: 'TD', 'IP', 'F').
+        type (CharField): The type of the issue (choices: 'B' for Bug, 'F' for Feature, 'T' for Task).
+        priority (CharField): The priority of the issue (choices: 'L' for Low, 'M' for Medium, 'H' for High).
+        accountable (ForeignKey): The user responsible for the issue.
+        time_created (DateTimeField): The date and time the issue was created.
+    """
     author = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -79,6 +102,16 @@ class Issue(models.Model):
 
 
 class Comment(models.Model):
+    """Represents a comment associated with an issue.
+
+    Attributes:
+        author (ForeignKey): The user who created the comment.
+        title (CharField): The title of the comment (unique within the issue).
+        issue (ForeignKey): The issue to which the comment is related.
+        description (TextField): The content of the comment.
+        uuid (UUIDField): A universally unique identifier for the comment.
+        time_created (DateTimeField): The date and time the comment was created.
+    """
     author = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
