@@ -14,7 +14,7 @@ Cette API exécutable localement peut être installée en suivant les étapes d�
 
 ### Installation et exécution de l'application avec Poetry
 
-1. Clonez ce dépôt de code à l'aide de la commande `$ git clone clone https://github.com/CeeG33/oc-cg-p10` (vous pouvez également télécharger le code [en tant qu'archive zip](https://github.com/CeeG33/oc-cg-p10/archive/refs/heads/main.zip)
+1. Clonez ce dépôt de code à l'aide de la commande `$ git clone clone https://github.com/CeeG33/oc-cg-p10` (vous pouvez également télécharger le code [en tant qu'archive zip](https://github.com/CeeG33/oc-cg-p10/archive/refs/heads/main.zip))
 2. Rendez vous depuis un terminal à la racine du répertoire oc-cg-p10 avec la commande `$ cd oc-cg-p10`
 3. Installez les dépendances du projet à l'aide de la commande `poetry install` 
 4. Démarrez le serveur avec `poetry run python manage.py runserver`
@@ -25,7 +25,7 @@ Les étapes 1 à 3 ne sont requises que pour l'installation initiale. Pour les l
 
 ### Installation et exécution de l'application sans Poetry (avec venv et pip)
 
-1. Clonez ce dépôt de code à l'aide de la commande `$ git clone clone https://github.com/CeeG33/oc-cg-p10` (vous pouvez également télécharger le code [en tant qu'archive zip](https://github.com/CeeG33/oc-cg-p10/archive/refs/heads/main.zip)
+1. Clonez ce dépôt de code à l'aide de la commande `$ git clone clone https://github.com/CeeG33/oc-cg-p10` (vous pouvez également télécharger le code [en tant qu'archive zip](https://github.com/CeeG33/oc-cg-p10/archive/refs/heads/main.zip))
 2. Rendez vous depuis un terminal à la racine du répertoire oc-cg-p10 avec la commande `$ cd oc-cg-p10`
 3. Créez un environnement virtuel pour le projet avec `$ python -m venv env` sous Windows ou `$ python3 -m venv env` sous MacOS ou Linux.
 4. Activez l'environnement virtuel avec `$ env\Scripts\activate` sous Windows ou `$ source env/bin/activate` sous MacOS ou Linux.
