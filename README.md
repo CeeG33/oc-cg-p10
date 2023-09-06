@@ -65,6 +65,8 @@ L'API fournit les points d'entrées suivants:
 | api/<br>project/<br><project_pk>/<br>issue/<br><issue_pk>/<br>comment/ | GET, POST | Être authentifié et contributeur du projet | Visualiser la liste des commentaires ou créer un nouveau commentaire sur un ticket donné. Note : seuls les commentaires du ticket sélectionné seront affichés |
 | api/<br>project/<br><project_pk>/<br>issue/<br><issue_pk>/<br>comment/<br><comment_pk>/ | GET, PUT, PATCH, DELETE | Lecture : être authentifié et contributeur du projet; Modification : être l'auteur du commentaire | Visualiser ou modifier/supprimer les détails d'un commentaire |
 
+La documentation Postman des endpoints est également visible en suivant [ce lien](https://documenter.getpostman.com/view/29348288/2s9YBxZwPn#intro).
+
 
 __________________________________________
 
@@ -129,3 +131,5 @@ The API provides the following entry points:
 | api/<br>project/<br><project_pk>/<br>issue/<br><issue_pk> | GET, PUT, PATCH, DELETE | Read: Be authenticated and a project contributor; Modification: Be the author of the issue | View or modify/delete issue details |
 | api/<br>project/<br><project_pk>/<br>issue/<br><issue_pk>/<br>comment/ | GET, POST | Be authenticated and a project contributor | View the list of comments or create a new comment on a given issue. Note: Only comments from the selected issue will be displayed |
 | api/<br>project/<br><project_pk>/<br>issue/<br><issue_pk>/<br>comment/<br><comment_pk>/ | GET, PUT, PATCH, DELETE | Read: Be authenticated and a project contributor; Modification: Be the author of the comment | View or modify/delete comment details |
+
+The endpoints Postman documentation can also be seen [here](https://documenter.getpostman.com/view/29348288/2s9YBxZwPn#intro).
